@@ -1,11 +1,22 @@
 from random import randrange
-from function import funko, duplicate
+from function import funko, rules
+import time
 
+for i in range(3):
+  print(rules(i))
 
 words = []
 length = 0
 with open("large.txt", "r") as file:
-    length = int(input("How long da word? "))
+    while length == 0:
+      girth = input("\nHow long da word? ")
+      if girth.isnumeric():
+        if int(girth) >= 26 or int(girth) <= 0:
+          print("Length must be 1 - 25")
+        else:
+          length = int(girth)
+      else:
+        print("Invalid Length")
     wholefile = file.read().split()
     for w in wholefile:
         if len(w) == length and w.isalpha():
@@ -35,16 +46,22 @@ for r in range(roundcalc):
     keyboard = temp
     for c in keyboard:
       while guess == "":
-        potguess = input("\n{board}\n{round})Enter Guess: ".format(board=keyboard, round=roundcalc - r))
+        potguess = input("{grid}\n{board}\n{round})Enter Guess: ".format(grid = grid,board=keyboard, round=roundcalc - r))
         if len(potguess) > length:
             print("Guess too long\n")
+            time.sleep(0.5)
         elif len(potguess) < length:
             print("Guess too short\n")
+            time.sleep(0.5)
         elif potguess not in words:
             print("Guess not in list\n")
+            time.sleep(0.5)
         else:
             guess = potguess
-
+        
+    
+    if length < 10:
+      grid += " " * (10 - length)
 
     for c in range(0,len(guess)):
         if guess[c] not in answer:
@@ -57,21 +74,18 @@ for r in range(roundcalc):
             else:
               alphabettrue = alphabettrue.replace(guess[c], letters[guess[c]][1])
               grid += funko(guess[c])[1]
-
         grid += " "
     grid += "\n"
-    print(grid)
+
 
     if guess == answer:
-        won = 1
+        won = r + 1
         break
 
 message = ""
-if won == 1:
-  message += "Well Done"
+if won > 0:
+  message += "Well Done, you got it in {} guesses".format(won)
 else:
   message += "Outta Lives Bitch"
 
 print("{message}, the word was {word}!".format(message=message, word=answer))
-
-
